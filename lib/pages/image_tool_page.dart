@@ -48,7 +48,7 @@ class _ImageToolPageState extends State<ImageToolPage> {
   final media = MediaService();
 
   // 預設選第一個 ONNX；只保留 .onnx 選項
-  String currentModel = 'assets/models/medium.onnx';
+  String currentModel = 'assets/models/Medium.onnx';
   String? _lastOnnxModel; // 記錄上一個已載入的 ONNX，避免切換不重載
 
   File? lastProcessed;
@@ -117,19 +117,19 @@ class _ImageToolPageState extends State<ImageToolPage> {
                       value: currentModel,
                       items: const [
                         DropdownMenuItem(
-                          value: 'assets/models/medium.onnx',
+                          value: 'assets/models/Medium.onnx',
                           child: Text('ONNX - medium'),
                         ),
                         DropdownMenuItem(
-                          value: 'assets/models/sub-conservative.onnx',
+                          value: 'assets/models/Sub-Conservative.onnx',
                           child: Text('ONNX - sub-conservative'),
                         ),
                         DropdownMenuItem(
-                          value: 'assets/models/conservative.onnx',
+                          value: 'assets/models/Conservative.onnx',
                           child: Text('ONNX - conservative'),
                         ),
                         DropdownMenuItem(
-                          value: 'assets/models/radical.onnx',
+                          value: 'assets/models/Radical.onnx',
                           child: Text('ONNX - radical'),
                         ),
                       ],
@@ -202,57 +202,47 @@ class _ImageToolPageState extends State<ImageToolPage> {
                               setState(() => processing = true);
                               try {
                                 final app = context.read<AppState>();
-                                final src = app.currentImage;   // ✅ 用 AppState 讀
+                                final src = app.currentImage;   // 讀取 AppState 的圖片
                                 if (src == null) return;
 
-                                // 先把原圖存到 Original
+                                // ⭐ Step 1：先把原圖存到 Original（不更動你的功能）
                                 await media.saveAsOriginal(src);
 
-                                // （你目前是模擬處理：直接讀 bytes）
-                                final outBytes = await src.readAsBytes();
+                                // ⭐ Step 2：執行 ONNX 推論
+                                final imageBytes = await src.readAsBytes();
 
-                                // final onnx = OnnxService();
-                                // final needReload = (_lastOnnxModel != currentModel) || !onnx.ready;
-                                // if (needReload) {
-                                //   await onnx.loadModel(
-                                //     assetPath: currentModel,
-                                //     // TODO: 這裡換成你的真實模型規格
-                                //     config: const OnnxModelConfig(
-                                //       inputName: 'input',     // ← 換成模型 input 名稱
-                                //       outputName: 'output',   // ← 若需要指定輸出時才用
-                                //       inputWidth: 224,        // ← 換成正確 W
-                                //       inputHeight: 224,       // ← 換成正確 H
-                                //       layout: TensorLayout.nhwc, // ← 若是 NCHW 改成 nchw
-                                //       mean: [0.485, 0.456, 0.406],
-                                //       std:  [0.229, 0.224, 0.225],
-                                //       inputRange255: true,
-                                //     ),
-                                //   );
-                                //   _lastOnnxModel = currentModel;
-                                // }
+                                // 取出使用者選擇的模型檔名（例如 Conservative / Medium…）
+                                final modelFileName = currentModel.split('/').last;
 
-                                // final outBytes = await OnnxService()
-                                //     .runImageToImage(current!)
-                                //     .timeout(const Duration(seconds: 20), onTimeout: () {
-                                //   throw TimeoutException('ONNX inference timed out');
-                                // }); // ⭐️ 移除耗時的 ONNX 推論和超時處理
+                                // 執行 ONNX，取得 PNG bytes
+                                final outBytes = await OnnxService()
+                                    .run(imageBytes, modelFileName)
+                                    .timeout(const Duration(seconds: 20), onTimeout: () {
+                                  throw TimeoutException('ONNX inference timed out');
+                                });
 
-                                // === 後續處理：將位元組資料存成處理後的檔案 ===
-                                // 存成處理後檔案
+                                // ⭐ Step 3：寫入暫存檔（保持你的處理流程）
                                 final tmpDir = await Directory.systemTemp.createTemp('onnx_');
-                                final tmpPath = '${tmpDir.path}/enh_${DateTime.now().millisecondsSinceEpoch}.jpg';
+                                final tmpPath =
+                                    '${tmpDir.path}/enh_${DateTime.now().millisecondsSinceEpoch}.png';
                                 final tmpFile = await File(tmpPath).writeAsBytes(outBytes);
+
+                                // ⭐ Step 4：存成 processed（不更動你的功能）
                                 final processedFile = await media.saveAsProcessed(tmpFile);
 
                                 if (mounted) {
-                                  app.setCurrentImage(processedFile); // ✅ 寫回 AppState
+                                  // ⭐ 重要：寫回 AppState（才能在 UI 看到新圖片）
+                                  app.setCurrentImage(processedFile);
+
                                   setState(() {
-                                    lastProcessed = processedFile;    // 本頁的處理標記仍在本地
+                                    lastProcessed = processedFile; // 本頁標記
                                   });
+
+                                  // ⭐ 存入 AppState 圖庫（原本就有）
                                   context.read<AppState>().addImage(
-                                    name: processedFile.uri.pathSegments.last,
-                                    path: processedFile.path,
-                                  );
+                                        name: processedFile.uri.pathSegments.last,
+                                        path: processedFile.path,
+                                      );
                                 }
                               } catch (e) {
                                 if (mounted) {
@@ -263,8 +253,8 @@ class _ImageToolPageState extends State<ImageToolPage> {
                               } finally {
                                 if (mounted) setState(() => processing = false);
                               }
-
                             },
+
                     ),
                   ),
                 ),
