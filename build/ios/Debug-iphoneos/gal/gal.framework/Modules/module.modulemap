@@ -1,0 +1,11 @@
+framework module gal {
+  umbrella header "gal-umbrella.h"
+
+  export *
+  module * { export * }
+}
+
+module gal.Swift {
+  header "gal-Swift.h"
+  requires objc
+}

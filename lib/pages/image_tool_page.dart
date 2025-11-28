@@ -118,19 +118,19 @@ class _ImageToolPageState extends State<ImageToolPage> {
                       items: const [
                         DropdownMenuItem(
                           value: 'assets/models/Medium.onnx',
-                          child: Text('ONNX - medium'),
+                          child: Text('Medium'),
                         ),
                         DropdownMenuItem(
                           value: 'assets/models/Sub-Conservative.onnx',
-                          child: Text('ONNX - sub-conservative'),
+                          child: Text('Sub-Conservative'),
                         ),
                         DropdownMenuItem(
                           value: 'assets/models/Conservative.onnx',
-                          child: Text('ONNX - conservative'),
+                          child: Text('Conservative'),
                         ),
                         DropdownMenuItem(
                           value: 'assets/models/Radical.onnx',
-                          child: Text('ONNX - radical'),
+                          child: Text('Radical'),
                         ),
                       ],
                       onChanged: (v) => setState(() => currentModel = v!),
