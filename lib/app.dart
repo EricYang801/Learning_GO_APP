@@ -13,12 +13,40 @@ class LearningGOApp extends StatefulWidget {
 class _LearningGOAppState extends State<LearningGOApp> {
   int _index = 0;
 
-  final _pages = const [
-    HomePage(),
-    VoicePage(),
-    ImageToolPage(),
-    SettingsPage(),
-  ];
+  // 追蹤哪些頁面已經被訪問過（延遲載入機制）
+  // 首頁預設載入，其他頁面只有在第一次切換時才建立
+  final Set<int> _loadedPages = {0};
+
+  /// 根據 index 建立對應的頁面 Widget
+  /// 只有在 _loadedPages 包含該 index 時才返回真正的頁面
+  Widget _buildPage(int index) {
+    // 如果該頁面尚未被訪問過，返回空的佔位 Widget
+    if (!_loadedPages.contains(index)) {
+      return const SizedBox.shrink();
+    }
+
+    // 返回對應的頁面
+    switch (index) {
+      case 0:
+        return const HomePage();
+      case 1:
+        return const VoicePage();
+      case 2:
+        return const ImageToolPage();
+      case 3:
+        return const SettingsPage();
+      default:
+        return const HomePage();
+    }
+  }
+
+  void _onDestinationSelected(int index) {
+    setState(() {
+      // 標記該頁面為已載入（如果是第一次訪問）
+      _loadedPages.add(index);
+      _index = index;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -117,13 +145,23 @@ class _LearningGOAppState extends State<LearningGOApp> {
         ),
       ),
       home: Scaffold(
-        body: _pages[_index],
+        // 使用 IndexedStack 保持已訪問頁面的狀態
+        // 配合 _loadedPages 實現延遲載入
+        body: IndexedStack(
+          index: _index,
+          children: [
+            _buildPage(0),
+            _buildPage(1),
+            _buildPage(2),
+            _buildPage(3),
+          ],
+        ),
         bottomNavigationBar: NavigationBar(
           backgroundColor: Colors.white, // ✅ 底部白底
           indicatorColor: const Color(0xFFCCE4FF),
           surfaceTintColor: Colors.transparent, // 防止Material3陰影
           selectedIndex: _index,
-          onDestinationSelected: (i) => setState(() => _index = i),
+          onDestinationSelected: _onDestinationSelected,
           destinations: const [
             NavigationDestination(
               icon: Icon(Icons.home_outlined),
