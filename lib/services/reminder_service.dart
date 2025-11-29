@@ -10,9 +10,12 @@ class ReminderService {
 
     for (final hw in app.homeworks) {
       if (hw['doneAt'] != null) continue;
-      final DateTime? remindAt =
-          hw['reminderAt'] != null ? DateTime.tryParse(hw['reminderAt']) : null;
-      if (remindAt != null && remindAt.isBefore(now) && hw['__announced__'] != true) {
+      final DateTime? remindAt = hw['reminderAt'] != null
+          ? DateTime.tryParse(hw['reminderAt'])
+          : null;
+      if (remindAt != null &&
+          remindAt.isBefore(now) &&
+          hw['__announced__'] != true) {
         app.pushAnnouncement(
           'Homework reminder',
           '${hw['title']} is due on ${(hw['due'] as String).substring(0, 10)}',

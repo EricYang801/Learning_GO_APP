@@ -53,9 +53,9 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget _buildRightMenu(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
 
-    const blueThumb = Color(0xFF007AFF);      // 藍色圓點
-    const blueTrack = Color(0x33007AFF);      // 淡藍色背景
-    final lightGrayTrack = Colors.grey.shade300;  // OFF 狀態淺灰背景
+    const blueThumb = Color(0xFF007AFF); // 藍色圓點
+    const blueTrack = Color(0x33007AFF); // 淡藍色背景
+    final lightGrayTrack = Colors.grey.shade300; // OFF 狀態淺灰背景
 
     return Drawer(
       width: width * 0.6,
@@ -71,48 +71,28 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
             const Divider(),
             SwitchListTile(
-              title: const Text(
-                "Today",
-                style: TextStyle(
-                  fontSize: 16,
-                ),
-              ),
+              title: const Text("Today", style: TextStyle(fontSize: 16)),
               value: _showToday,
               activeTrackColor: blueThumb,
               inactiveTrackColor: lightGrayTrack,
               onChanged: (v) => setState(() => _showToday = v),
             ),
             SwitchListTile(
-              title: const Text(
-                "This Week",
-                style: TextStyle(
-                  fontSize: 16,
-                ),
-              ),
+              title: const Text("This Week", style: TextStyle(fontSize: 16)),
               value: _showWeek,
               activeTrackColor: blueThumb,
               inactiveTrackColor: lightGrayTrack,
               onChanged: (v) => setState(() => _showWeek = v),
             ),
             SwitchListTile(
-              title: const Text(
-                "This Month",
-                style: TextStyle(
-                  fontSize: 16,
-                ),
-              ),
+              title: const Text("This Month", style: TextStyle(fontSize: 16)),
               value: _showMonth,
               activeTrackColor: blueThumb,
               inactiveTrackColor: lightGrayTrack,
               onChanged: (v) => setState(() => _showMonth = v),
             ),
             SwitchListTile(
-              title: const Text(
-                "Distribution",
-                style: TextStyle(
-                  fontSize: 16,
-                ),
-              ),
+              title: const Text("Distribution", style: TextStyle(fontSize: 16)),
               value: _showDistribution,
               activeTrackColor: blueThumb,
               inactiveTrackColor: lightGrayTrack,
@@ -201,8 +181,10 @@ class _SettingsPageState extends State<SettingsPage> {
 
     final nowMins = _nowMinutes();
     final todaySecs = _totalSecondsForDateFromSeconds(app, now);
-    final yesterdaySecs =
-        _totalSecondsForDateFromSeconds(app, now.subtract(const Duration(days: 1)));
+    final yesterdaySecs = _totalSecondsForDateFromSeconds(
+      app,
+      now.subtract(const Duration(days: 1)),
+    );
     final diffP = _calcDiffPercent(todaySecs, yesterdaySecs);
 
     return SectionCard(
@@ -239,19 +221,23 @@ class _SettingsPageState extends State<SettingsPage> {
                     TextSpan(
                       text: _formatTime(todaySecs, big: true).split(' ')[0],
                       style: const TextStyle(
-                          fontSize: 32,
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold),
+                        fontSize: 32,
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     TextSpan(
-                      text: " ${_formatTime(todaySecs, big: true).split(' ')[1]}",
+                      text:
+                          " ${_formatTime(todaySecs, big: true).split(' ')[1]}",
                       style: const TextStyle(
-                          fontSize: 14, color: Colors.black87),
+                        fontSize: 14,
+                        color: Colors.black87,
+                      ),
                     ),
                   ],
                 ),
               ),
-              
+
               Padding(
                 padding: const EdgeInsets.only(bottom: 3),
                 child: Text(
@@ -272,8 +258,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   // Timeline Labels
   Widget _buildTimelineLabels(int centerMinutes) {
-    int clamp(int m) =>
-        m < 0 ? 0 : (m > 1439 ? 1439 : m);
+    int clamp(int m) => m < 0 ? 0 : (m > 1439 ? 1439 : m);
 
     String fmt(int m) =>
         "${(m ~/ 60).toString().padLeft(2, '0')}:${(m % 60).toString().padLeft(2, '0')}";
@@ -289,7 +274,10 @@ class _SettingsPageState extends State<SettingsPage> {
       children: [
         Text(fmt(leftMost), style: const TextStyle(fontSize: 11)),
         Text(fmt(leftMid), style: const TextStyle(fontSize: 11)),
-        Text(fmt(center), style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+        Text(
+          fmt(center),
+          style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
+        ),
         Text(fmt(rightMid), style: const TextStyle(fontSize: 11)),
         Text(fmt(rightMost), style: const TextStyle(fontSize: 11)),
       ],
@@ -317,11 +305,13 @@ class _SettingsPageState extends State<SettingsPage> {
     }
 
     final thisWeekSecs = [
-      for (int i = 0; i < 7; i++) app.todaySeconds(now.subtract(Duration(days: i)))
+      for (int i = 0; i < 7; i++)
+        app.todaySeconds(now.subtract(Duration(days: i))),
     ].reduce((a, b) => a + b);
 
     final lastWeekSecs = [
-      for (int i = 7; i < 14; i++) app.todaySeconds(now.subtract(Duration(days: i)))
+      for (int i = 7; i < 14; i++)
+        app.todaySeconds(now.subtract(Duration(days: i))),
     ].reduce((a, b) => a + b);
 
     final diffP = _calcDiffPercent(thisWeekSecs, lastWeekSecs);
@@ -356,9 +346,7 @@ class _SettingsPageState extends State<SettingsPage> {
       tint: AppColors.softGray,
       child: Column(
         children: [
-          SizedBox(
-            height: 20,
-          ),
+          SizedBox(height: 20),
 
           SizedBox(
             height: 170,
@@ -385,14 +373,17 @@ class _SettingsPageState extends State<SettingsPage> {
                       showTitles: true,
                       interval: interval,
                       getTitlesWidget: (v, meta) => Text(
-                          useHours ? "${v.toInt()}h" : "${v.toInt()}m",
-                          style: const TextStyle(fontSize: 10)),
+                        useHours ? "${v.toInt()}h" : "${v.toInt()}m",
+                        style: const TextStyle(fontSize: 10),
+                      ),
                     ),
                   ),
-                  rightTitles:
-                      const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                  topTitles:
-                      const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                  rightTitles: const AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
+                  topTitles: const AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
                   bottomTitles: AxisTitles(
                     sideTitles: SideTitles(
                       showTitles: true,
@@ -401,8 +392,10 @@ class _SettingsPageState extends State<SettingsPage> {
                         if (i < 0 || i >= labels.length) {
                           return const SizedBox.shrink();
                         }
-                        return Text(labels[i],
-                            style: const TextStyle(fontSize: 11));
+                        return Text(
+                          labels[i],
+                          style: const TextStyle(fontSize: 11),
+                        );
                       },
                     ),
                   ),
@@ -444,9 +437,10 @@ class _SettingsPageState extends State<SettingsPage> {
           TextSpan(
             text: formatted[0],
             style: const TextStyle(
-                fontSize: 32,
-                color: Colors.black,
-                fontWeight: FontWeight.bold),
+              fontSize: 32,
+              color: Colors.black,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           TextSpan(
             text: " ${formatted[1]}",
@@ -456,8 +450,6 @@ class _SettingsPageState extends State<SettingsPage> {
       ),
     );
   }
-
-
 
   // =========================================================
   // 每月圖表（不變）
@@ -477,8 +469,7 @@ class _SettingsPageState extends State<SettingsPage> {
     }
 
     final thisMonthSecs = [
-      for (int d = 1; d <= days; d++)
-        app.todaySeconds(DateTime(y, m, d))
+      for (int d = 1; d <= days; d++) app.todaySeconds(DateTime(y, m, d)),
     ].reduce((a, b) => a + b);
 
     // 上個月
@@ -490,8 +481,7 @@ class _SettingsPageState extends State<SettingsPage> {
     final pDays = DateTime(py, pm + 1, 0).day;
 
     final lastMonthSecs = [
-      for (int d = 1; d <= pDays; d++)
-        app.todaySeconds(DateTime(py, pm, d))
+      for (int d = 1; d <= pDays; d++) app.todaySeconds(DateTime(py, pm, d)),
     ].reduce((a, b) => a + b);
 
     final diffP = _calcDiffPercent(thisMonthSecs, lastMonthSecs);
@@ -526,9 +516,7 @@ class _SettingsPageState extends State<SettingsPage> {
       tint: AppColors.softGray,
       child: Column(
         children: [
-          SizedBox(
-            height: 20,
-          ),
+          SizedBox(height: 20),
 
           SizedBox(
             height: 170,
@@ -571,14 +559,19 @@ class _SettingsPageState extends State<SettingsPage> {
                         if (days > 25 && i % 3 != 0) {
                           return const SizedBox.shrink();
                         }
-                        return Text(labels[i], style: const TextStyle(fontSize: 10));
+                        return Text(
+                          labels[i],
+                          style: const TextStyle(fontSize: 10),
+                        );
                       },
                     ),
                   ),
-                  rightTitles:
-                      const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                  topTitles:
-                      const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                  rightTitles: const AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
+                  topTitles: const AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
                 ),
               ),
             ),
@@ -671,7 +664,9 @@ class _SettingsPageState extends State<SettingsPage> {
                   child: Text(
                     label,
                     style: const TextStyle(
-                        fontSize: 15, fontWeight: FontWeight.w500),
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ),
 
@@ -725,7 +720,6 @@ class _SettingsPageState extends State<SettingsPage> {
       ),
     );
   }
-
 }
 
 // =========================================================
@@ -735,10 +729,7 @@ class _DayTimelinePainter extends CustomPainter {
   final List<Map<String, dynamic>> sessions;
   final int centerMinutes; // 0~1439
 
-  _DayTimelinePainter({
-    required this.sessions,
-    required this.centerMinutes,
-  });
+  _DayTimelinePainter({required this.sessions, required this.centerMinutes});
 
   int _parseMinutes(String? hhmm) {
     if (hhmm == null) return 0;
@@ -780,7 +771,10 @@ class _DayTimelinePainter extends CustomPainter {
     if (range <= 0) return;
 
     final fullRect = RRect.fromLTRBR(
-      0, top, size.width, top + h,
+      0,
+      top,
+      size.width,
+      top + h,
       const Radius.circular(999),
     );
     canvas.drawRRect(fullRect, basePaint);
@@ -801,7 +795,10 @@ class _DayTimelinePainter extends CustomPainter {
       final right = size.width * endRatio;
 
       final segRect = RRect.fromLTRBR(
-        left, top, right, top + h,
+        left,
+        top,
+        right,
+        top + h,
         const Radius.circular(999),
       );
       canvas.drawRRect(segRect, activePaint);

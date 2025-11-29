@@ -30,9 +30,9 @@ class _LearningGOAppState extends State<LearningGOApp> {
         scaffoldBackgroundColor: Colors.white, // ✅ body：白底
         appBarTheme: const AppBarTheme(
           centerTitle: false,
-          backgroundColor: Colors.white,  // ✅ AppBar 白底
+          backgroundColor: Colors.white, // ✅ AppBar 白底
           elevation: 0,
-          foregroundColor: Colors.black,  // ✅ 文字與icon黑色
+          foregroundColor: Colors.black, // ✅ 文字與icon黑色
           titleTextStyle: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,
@@ -55,39 +55,46 @@ class _LearningGOAppState extends State<LearningGOApp> {
             return Colors.black87;
           }),
           dayBackgroundColor: WidgetStateProperty.resolveWith((states) {
-            if (states.contains(WidgetState.selected)) return const Color(0xFF007AFF);
+            if (states.contains(WidgetState.selected)) {
+              return const Color(0xFF007AFF);
+            }
             return Colors.transparent;
           }),
 
           // 「今天」：未選中是淡藍底；選中時改成和一般選中一致（藍底白字）
           todayForegroundColor: WidgetStateProperty.resolveWith((states) {
-            if (states.contains(WidgetState.selected)) return Colors.white;          // 選中「今天」文字色
-            return const Color(0xFF007AFF);                                         // 未選中「今天」文字色
+            if (states.contains(WidgetState.selected)) {
+              return Colors.white; // 選中「今天」文字色
+            }
+            return const Color(0xFF007AFF); // 未選中「今天」文字色
           }),
           todayBackgroundColor: WidgetStateProperty.resolveWith((states) {
-            if (states.contains(WidgetState.selected)) return const Color(0xFF007AFF); // 選中「今天」底色
-            return const Color(0xFF007AFF).withOpacity(0.15);                          // 未選中「今天」底色
+            if (states.contains(WidgetState.selected)) {
+              return const Color(0xFF007AFF); // 選中「今天」底色
+            }
+            return const Color(0xFF007AFF).withOpacity(0.15); // 未選中「今天」底色
           }),
           // 如果不想「今天」在選中時還有外框，可改成 BorderSide.none
           // todayBorder: BorderSide.none,
           todayBorder: const BorderSide(color: Color(0xFF007AFF)),
         ),
 
-
-
         // 讓右下角按鈕（確定/取消）變藍、字體大小 18
         textButtonTheme: TextButtonThemeData(
           style: TextButton.styleFrom(
             foregroundColor: Color(0xFF007AFF),
-            textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+            textStyle: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ),
 
         // 當切換成「輸入模式」時，輸入框與游標顏色統一藍色
         inputDecorationTheme: const InputDecorationTheme(
-          labelStyle: TextStyle(color: Colors.grey),           // 未浮起時的標籤色
-          floatingLabelStyle: TextStyle(color: Colors.black),   // 浮起時的標籤色（聚焦/有值）
-          hintStyle: TextStyle(color: Colors.grey),            // 只有真的看到 hint 才會用到
+          labelStyle: TextStyle(color: Colors.grey), // 未浮起時的標籤色
+          floatingLabelStyle: TextStyle(color: Colors.black), // 浮起時的標籤色（聚焦/有值）
+          hintStyle: TextStyle(color: Colors.grey), // 只有真的看到 hint 才會用到
 
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(color: Colors.black, width: 2),

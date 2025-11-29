@@ -2,13 +2,11 @@
 // NOTE: All strings/identifiers in English; comments in Chinese。
 
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:flutter/services.dart'; // for PlatformException
 import 'package:path_provider/path_provider.dart';
 import 'package:record/record.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:gal/gal.dart';
-
 
 class MediaService {
   // ===== Singleton =====
@@ -97,9 +95,14 @@ class MediaService {
   /// Android：Pictures → Downloads → External → fallback Documents/Exports
   /// iOS/macOS：Documents/Exports（若需存相簿，之後再加外部套件）
   // 只存「圖片」到系統相簿；不做任何檔案複製
-  Future<bool> saveProcessedToDevice(File imageFile, {String album = 'LearningGO'}) async {
+  Future<bool> saveProcessedToDevice(
+    File imageFile, {
+    String album = 'LearningGO',
+  }) async {
     // 非支援平台直接返回（避免 web/macos 以外平台報錯）
-    if (!Platform.isAndroid && !Platform.isIOS && !Platform.isMacOS) return false;
+    if (!Platform.isAndroid && !Platform.isIOS && !Platform.isMacOS) {
+      return false;
+    }
 
     // 防呆：確認是圖片副檔名
     if (!_isImagePath(imageFile.path)) return false;
@@ -150,12 +153,15 @@ class MediaService {
 
     // Safety stop if already recording
     if (await _recorder.isRecording()) {
-      try { await _recorder.stop(); } catch (_) {}
+      try {
+        await _recorder.stop();
+      } catch (_) {}
     }
 
     // 改為長存在 Documents/audios
     final dir = await _getAudiosDir();
-    final String filePath = '${dir.path}/rec_${DateTime.now().millisecondsSinceEpoch}.m4a';
+    final String filePath =
+        '${dir.path}/rec_${DateTime.now().millisecondsSinceEpoch}.m4a';
 
     final config = RecordConfig(
       encoder: AudioEncoder.aacLc,
@@ -186,7 +192,9 @@ class MediaService {
       // 保險：若原生層回來的檔案不在 audios/ 內，複製回去再回傳
       final audios = await _getAudiosDir();
       if (!result.startsWith(audios.path)) {
-        final fixed = File('${audios.path}/rec_${DateTime.now().millisecondsSinceEpoch}.m4a');
+        final fixed = File(
+          '${audios.path}/rec_${DateTime.now().millisecondsSinceEpoch}.m4a',
+        );
         await File(result).copy(fixed.path);
         return fixed.path;
       }
@@ -200,7 +208,8 @@ class MediaService {
   /// 將外部音檔收進 App 的 Documents/audios（上傳/檔案挑選時使用）
   Future<File> ingestAudio(File source) async {
     final dir = await _getAudiosDir();
-    final name = 'rec_${DateTime.now().millisecondsSinceEpoch}${_extension(source.path)}';
+    final name =
+        'rec_${DateTime.now().millisecondsSinceEpoch}${_extension(source.path)}';
     final target = File('${dir.path}/$name');
     return source.copy(target.path);
   }

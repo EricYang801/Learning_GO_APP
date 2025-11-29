@@ -25,7 +25,9 @@ InputDecoration _decoration({
     filled: true,
     fillColor: Colors.grey[100],
     isDense: true,
-    contentPadding: contentPadding ?? const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+    contentPadding:
+        contentPadding ??
+        const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
     enabledBorder: base,
     focusedBorder: focused,
     border: base,
@@ -52,7 +54,11 @@ Widget _dateBox({
         children: [
           // 顯示已選日期（沿用你的 humanDue）
           Text(humanDue(value)),
-          Icon(Icons.calendar_today_outlined, size: 18, color: Colors.grey[600]),
+          Icon(
+            Icons.calendar_today_outlined,
+            size: 18,
+            color: Colors.grey[600],
+          ),
         ],
       ),
     ),
@@ -117,7 +123,6 @@ Widget _colorStrip({
   );
 }
 
-
 // ============================
 // AddTodoSheet
 // ============================
@@ -169,11 +174,9 @@ class _AddTodoSheetState extends State<AddTodoSheet> {
           // Title（獨立標籤 + 矮一點的輸入框）
           const Align(
             alignment: Alignment.centerLeft,
-            child: Text('To-Do Title',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600
-              )
+            child: Text(
+              'To-Do Title',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
             ),
           ),
           const SizedBox(height: 6),
@@ -182,10 +185,11 @@ class _AddTodoSheetState extends State<AddTodoSheet> {
             maxLines: 1,
             decoration: _decoration(
               hint: 'Enter To-Do title',
-              contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
-            ).copyWith(
-              errorText: titleError ? 'Title is required' : null,
-            ),
+              contentPadding: const EdgeInsets.symmetric(
+                vertical: 10,
+                horizontal: 12,
+              ),
+            ).copyWith(errorText: titleError ? 'Title is required' : null),
             onChanged: (_) {
               if (titleError && title.text.trim().isNotEmpty) {
                 setState(() => titleError = false);
@@ -197,16 +201,13 @@ class _AddTodoSheetState extends State<AddTodoSheet> {
           // Description（較高、可捲動）
           const Align(
             alignment: Alignment.centerLeft,
-            child: Text('Description',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600
-              )
+            child: Text(
+              'Description',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
             ),
           ),
           const SizedBox(height: 6),
-          TextField
-          (
+          TextField(
             controller: desc,
             minLines: 4,
             maxLines: 8, // 超過會在欄位內滾動
@@ -217,11 +218,9 @@ class _AddTodoSheetState extends State<AddTodoSheet> {
           // Due Date（獨立標籤 + 可點擊灰底框）
           const Align(
             alignment: Alignment.centerLeft,
-            child: Text('Due Date',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600
-              )
+            child: Text(
+              'Due Date',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
             ),
           ),
           const SizedBox(height: 6),
@@ -240,7 +239,6 @@ class _AddTodoSheetState extends State<AddTodoSheet> {
           ),
           const SizedBox(height: 12),
 
-
           // Actions
           Row(
             children: [
@@ -252,11 +250,9 @@ class _AddTodoSheetState extends State<AddTodoSheet> {
                     Navigator.pop(context);
                   },
                   icon: const Icon(Icons.delete_outline),
-                  label: const Text('Delete',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600
-                    ),
+                  label: const Text(
+                    'Delete',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                   ),
                   style: TextButton.styleFrom(foregroundColor: Colors.red),
                 ),
@@ -274,15 +270,18 @@ class _AddTodoSheetState extends State<AddTodoSheet> {
                   if (widget.existing == null) {
                     app.addTodo(title.text, desc.text, due);
                   } else {
-                    app.updateTodo(widget.existing!['id'], title.text, desc.text, due);
+                    app.updateTodo(
+                      widget.existing!['id'],
+                      title.text,
+                      desc.text,
+                      due,
+                    );
                   }
                   Navigator.pop(context);
                 },
-                child: const Text('Save',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600
-                  ),
+                child: const Text(
+                  'Save',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                 ),
               ),
             ],
@@ -334,7 +333,9 @@ class _AddHomeworkSheetState extends State<AddHomeworkSheet> {
       content.text = e['content'] ?? '';
       due = DateTime.parse(e['due']);
       reminderType = e['reminderType'] ?? 'None';
-      reminderAt = e['reminderAt'] != null ? DateTime.tryParse(e['reminderAt']) : null;
+      reminderAt = e['reminderAt'] != null
+          ? DateTime.tryParse(e['reminderAt'])
+          : null;
       color = Color(e['color'] ?? Colors.orange.value);
     }
   }
@@ -362,11 +363,9 @@ class _AddHomeworkSheetState extends State<AddHomeworkSheet> {
             // Title（獨立標籤 + 矮一點的輸入框）
             const Align(
               alignment: Alignment.centerLeft,
-              child: Text('Homework Title',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600
-                )
+              child: Text(
+                'Homework Title',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
               ),
             ),
             const SizedBox(height: 6),
@@ -375,10 +374,11 @@ class _AddHomeworkSheetState extends State<AddHomeworkSheet> {
               maxLines: 1,
               decoration: _decoration(
                 hint: 'Enter homework title',
-                contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
-              ).copyWith(
-                errorText: titleError ? 'Title is required' : null,
-              ),
+                contentPadding: const EdgeInsets.symmetric(
+                  vertical: 10,
+                  horizontal: 12,
+                ),
+              ).copyWith(errorText: titleError ? 'Title is required' : null),
               onChanged: (_) {
                 if (titleError && title.text.trim().isNotEmpty) {
                   setState(() => titleError = false);
@@ -391,11 +391,9 @@ class _AddHomeworkSheetState extends State<AddHomeworkSheet> {
             // Content（較高、可捲動）
             const Align(
               alignment: Alignment.centerLeft,
-              child: Text('Homework Content',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600
-                )
+              child: Text(
+                'Homework Content',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
               ),
             ),
             const SizedBox(height: 6),
@@ -403,18 +401,18 @@ class _AddHomeworkSheetState extends State<AddHomeworkSheet> {
               controller: content,
               minLines: 5,
               maxLines: 10, // 超過會在欄位內滾動
-              decoration: _decoration(hint: 'Describe the content (optional)...'),
+              decoration: _decoration(
+                hint: 'Describe the content (optional)...',
+              ),
             ),
             const SizedBox(height: 10),
 
             // Due Date（獨立標籤 + 可點擊灰底框）
             const Align(
               alignment: Alignment.centerLeft,
-              child: Text('Due Date',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600
-                )
+              child: Text(
+                'Due Date',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
               ),
             ),
             const SizedBox(height: 6),
@@ -436,31 +434,36 @@ class _AddHomeworkSheetState extends State<AddHomeworkSheet> {
             // Reminder
             const Align(
               alignment: Alignment.centerLeft,
-              child: Text('Reminder',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600
-                )
+              child: Text(
+                'Reminder',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
               ),
             ),
             const SizedBox(height: 6),
             InputDecorator(
-              decoration: _decoration(
-                contentPadding: EdgeInsets.zero,
-              ),
+              decoration: _decoration(contentPadding: EdgeInsets.zero),
               child: DropdownButtonHideUnderline(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 3,
+                  ),
                   child: _denseDropdownWrapper(
                     child: DropdownButton<String>(
                       isExpanded: true,
                       isDense: true,
-                      icon: const Icon(Icons.arrow_drop_down, color: Colors.grey),
+                      icon: const Icon(
+                        Icons.arrow_drop_down,
+                        color: Colors.grey,
+                      ),
                       iconSize: 24,
                       borderRadius: BorderRadius.circular(_kFieldRadius),
                       dropdownColor: Colors.white,
                       elevation: 3,
-                      style: const TextStyle(fontSize: 15, color: Colors.black87),
+                      style: const TextStyle(
+                        fontSize: 15,
+                        color: Colors.black87,
+                      ),
 
                       value: reminderType,
 
@@ -484,10 +487,7 @@ class _AddHomeworkSheetState extends State<AddHomeworkSheet> {
                         final label = isCustom
                             ? 'Custom (${humanDue(reminderAt!)} · ${TimeOfDay.fromDateTime(reminderAt!).format(context)})'
                             : e;
-                        return DropdownMenuItem(
-                          value: e,
-                          child: Text(label),
-                        );
+                        return DropdownMenuItem(value: e, child: Text(label));
                       }).toList(),
                       onChanged: (v) async {
                         if (v == null) return;
@@ -506,7 +506,13 @@ class _AddHomeworkSheetState extends State<AddHomeworkSheet> {
                           final t = await pickTime(context, TimeOfDay.now());
                           if (t == null) return; // 取消就不改 state
 
-                          final picked = DateTime(d.year, d.month, d.day, t.hour, t.minute);
+                          final picked = DateTime(
+                            d.year,
+                            d.month,
+                            d.day,
+                            t.hour,
+                            t.minute,
+                          );
 
                           setState(() {
                             reminderType = 'Custom';
@@ -542,7 +548,8 @@ class _AddHomeworkSheetState extends State<AddHomeworkSheet> {
             // Color（標題對齊 + 一整條色彩圓圈，直接點選，不跳視窗）
             const Align(
               alignment: Alignment.centerLeft,
-              child: Text('Color',
+              child: Text(
+                'Color',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
               ),
             ),
@@ -565,7 +572,6 @@ class _AddHomeworkSheetState extends State<AddHomeworkSheet> {
             ),
             const SizedBox(height: 12),
 
-
             // Actions
             Row(
               children: [
@@ -577,10 +583,11 @@ class _AddHomeworkSheetState extends State<AddHomeworkSheet> {
                       Navigator.pop(context);
                     },
                     icon: const Icon(Icons.delete_outline),
-                    label: const Text('Delete',
+                    label: const Text(
+                      'Delete',
                       style: TextStyle(
                         fontSize: 16,
-                        fontWeight: FontWeight.w600
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                     style: TextButton.styleFrom(foregroundColor: Colors.red),
@@ -614,11 +621,9 @@ class _AddHomeworkSheetState extends State<AddHomeworkSheet> {
                     }
                     Navigator.pop(context);
                   },
-                  child: const Text('Save',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600
-                    ),
+                  child: const Text(
+                    'Save',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                   ),
                 ),
               ],

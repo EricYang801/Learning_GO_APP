@@ -60,7 +60,8 @@ class SectionCard extends StatelessWidget {
           // 預設較小一點
           Text(
             title,
-            style: titleStyle ??
+            style:
+                titleStyle ??
                 const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w700,
@@ -106,10 +107,7 @@ class SectionCard extends StatelessWidget {
           ),
         ],
       ),
-      child: ClipRRect(
-        borderRadius: borderRadius,
-        child: body,
-      ),
+      child: ClipRRect(borderRadius: borderRadius, child: body),
     );
   }
 }

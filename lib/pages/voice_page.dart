@@ -21,7 +21,7 @@ class _VoicePageState extends State<VoicePage> {
   final STTService stt = STTService();
   final MediaService media = MediaService();
 
-  bool sttReady = false;          // Whisper/模型是否已就緒（僅做初始化檢查）
+  bool sttReady = false; // Whisper/模型是否已就緒（僅做初始化檢查）
 
   @override
   void initState() {
@@ -96,17 +96,21 @@ class _VoicePageState extends State<VoicePage> {
       }
 
       print('[STT] start file transcribe: ${file.path}');
-      final Object? raw = await stt.transcribeFile(file.path, lang: 'auto');
+      final Object raw = await stt.transcribeFile(file.path, lang: 'auto');
       final normalized = _normalizeSTTResult(raw);
-      print('[STT] got result type=${raw.runtimeType} len=${(raw?.toString() ?? '').length}');
+      print(
+        '[STT] got result type=${raw.runtimeType} len=${(raw.toString() ?? '').length}',
+      );
 
       // 寫回全域狀態（即使頁面已離開，Future 仍可完成並更新狀態）
-      app.setVoiceText(normalized.isEmpty ? '[No speech detected]' : normalized);
+      app.setVoiceText(
+        normalized.isEmpty ? '[No speech detected]' : normalized,
+      );
     } catch (e) {
       app.setVoiceText('Transcription failed: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Transcription failed: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Transcription failed: $e')));
     } finally {
       app.setVoiceTranscribing(false);
     }
@@ -135,9 +139,9 @@ class _VoicePageState extends State<VoicePage> {
     } catch (e) {
       if (!mounted) return;
       context.read<AppState>().setRecording(value: false, path: null);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to start recording: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Failed to start recording: $e')));
       setState(() {});
     }
   }
@@ -149,18 +153,15 @@ class _VoicePageState extends State<VoicePage> {
       if (!mounted) return;
 
       final prev = context.read<AppState>().recordingPath;
-      context.read<AppState>().setRecording(
-        value: false,
-        path: path ?? prev,
-      );
+      context.read<AppState>().setRecording(value: false, path: path ?? prev);
 
       setState(() {}); // 刷新按鈕/Save 狀態
     } catch (e) {
       if (!mounted) return;
       context.read<AppState>().setRecording(value: false, path: null);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to stop recording: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Failed to stop recording: $e')));
       setState(() {});
     }
   }
@@ -171,7 +172,8 @@ class _VoicePageState extends State<VoicePage> {
     final path = app.recordingPath;
     if (path == null) return;
 
-    final name = 'Audio ${DateTime.now().toLocal().toString().substring(0, 16)}';
+    final name =
+        'Audio ${DateTime.now().toLocal().toString().substring(0, 16)}';
     app.addAudio(name: name, path: path);
     app.setRecording(value: false, path: null); // 存完清空暫存
     setState(() {}); // 刷新 Save 按鈕狀態
@@ -197,7 +199,7 @@ class _VoicePageState extends State<VoicePage> {
     final recordingPath = app.recordingPath;
 
     final transcribing = app.voiceTranscribing; // 轉寫中（跨頁保留）
-    final displayText = app.voiceText;         // 轉寫結果（跨頁保留）
+    final displayText = app.voiceText; // 轉寫結果（跨頁保留）
 
     return Scaffold(
       appBar: AppBar(
@@ -233,8 +235,9 @@ class _VoicePageState extends State<VoicePage> {
                 IconButton(
                   onPressed: () {
                     Clipboard.setData(ClipboardData(text: displayText));
-                    ScaffoldMessenger.of(context)
-                        .showSnackBar(const SnackBar(content: Text('Copied')));
+                    ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(const SnackBar(content: Text('Copied')));
                   },
                   icon: const Icon(Icons.copy_all),
                 ),
@@ -254,9 +257,7 @@ class _VoicePageState extends State<VoicePage> {
                     displayText.trim().isEmpty
                         ? (transcribing ? 'Transcribing audio file...' : '—')
                         : displayText,
-                    style: const TextStyle(
-                      fontSize: 16,
-                    ),
+                    style: const TextStyle(fontSize: 16),
                   ),
                 ),
               ),
@@ -271,7 +272,10 @@ class _VoicePageState extends State<VoicePage> {
                 style: OutlinedButton.styleFrom(
                   foregroundColor: const Color(0xFF007AFF),
                   side: const BorderSide(color: Color(0xFF007AFF), width: 1.5),
-                  textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                  textStyle: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
                 icon: const Icon(Icons.upload_file),
                 label: const Text('Upload Audio File'),
@@ -291,7 +295,8 @@ class _VoicePageState extends State<VoicePage> {
                       style: FilledButton.styleFrom(
                         backgroundColor: recording ? Colors.red : Colors.green,
                         textStyle: const TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.w600,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                       icon: Icon(recording ? Icons.stop : Icons.mic),
@@ -317,11 +322,13 @@ class _VoicePageState extends State<VoicePage> {
                         backgroundColor: const Color(0xFFD6E6FF),
                         foregroundColor: const Color(0xFF007AFF),
                         textStyle: const TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.w600,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
-                      onPressed:
-                          (!recording && recordingPath != null) ? _saveRecording : null,
+                      onPressed: (!recording && recordingPath != null)
+                          ? _saveRecording
+                          : null,
                       child: const Text('Save Recording'),
                     ),
                   ),

@@ -65,11 +65,7 @@ class OnnxService {
       }
     }
 
-    return {
-      "input": input,
-      "width": originalWidth,
-      "height": originalHeight,
-    };
+    return {"input": input, "width": originalWidth, "height": originalHeight};
   }
 
   /// ⭐ 新版：run 傳入 modelName
@@ -81,10 +77,12 @@ class OnnxService {
     final originalW = prep["width"] as int;
     final originalH = prep["height"] as int;
 
-    final inputTensor = OrtValueTensor.createTensorWithDataList(
-      inputFloats,
-      [1, 3, 224, 224],
-    );
+    final inputTensor = OrtValueTensor.createTensorWithDataList(inputFloats, [
+      1,
+      3,
+      224,
+      224,
+    ]);
 
     final options = OrtRunOptions();
     final inputName = _session.inputNames[0];

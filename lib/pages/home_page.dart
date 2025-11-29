@@ -31,11 +31,15 @@ class _HomePageState extends State<HomePage> {
     final (done, total) = app.todayProgress();
     final today = app.todaySeconds(DateTime.now());
     final goal = app.todayGoalSeconds;
-    final ratio = (goal == null || goal == 0) ? 0.0 : (today / goal).clamp(0.0, 1.0);
+    final ratio = (goal == null || goal == 0)
+        ? 0.0
+        : (today / goal).clamp(0.0, 1.0);
     final goalReached = goal != null && today >= goal;
     final center = goal == null
         ? 'No goal'
-        : (today >= goal ? '+${hhmm(today - goal)}' : '-${hhmm((goal - today).clamp(0, 999999))}');
+        : (today >= goal
+              ? '+${hhmm(today - goal)}'
+              : '-${hhmm((goal - today).clamp(0, 999999))}');
 
     return Scaffold(
       appBar: AppBar(
@@ -56,7 +60,10 @@ class _HomePageState extends State<HomePage> {
           SectionCard(
             title: 'Daily Task',
             tint: AppColors.softBlue,
-            trailing: Text('$done / $total', style: const TextStyle(fontWeight: FontWeight.bold)),
+            trailing: Text(
+              '$done / $total',
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
             child: LinearProgressIndicator(
               value: total == 0 ? 0 : done / total,
               minHeight: 8,
@@ -113,7 +120,8 @@ class _HomePageState extends State<HomePage> {
                         builder: (ctx, setLocal) {
                           return ListTile(
                             dense: true,
-                            contentPadding: EdgeInsets.zero, // 關鍵：去掉 ListTile 內建左右內距
+                            contentPadding:
+                                EdgeInsets.zero, // 關鍵：去掉 ListTile 內建左右內距
                             horizontalTitleGap: 12,
                             leading: Checkbox(
                               value: checked,
@@ -121,21 +129,23 @@ class _HomePageState extends State<HomePage> {
                                 setLocal(() => checked = v ?? false);
                                 _completeTimer?.cancel();
                                 if (checked) {
-                                  _completeTimer = Timer(const Duration(seconds: 3), () {
-                                    app.completeTodo(t['id']);
-                                  });
+                                  _completeTimer = Timer(
+                                    const Duration(seconds: 3),
+                                    () {
+                                      app.completeTodo(t['id']);
+                                    },
+                                  );
                                 }
                               },
                               shape: const CircleBorder(), // 👈 改成圓形
-                              activeColor: const Color(0xFF007AFF),     // 👈 勾選時為藍色
-                              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              activeColor: const Color(0xFF007AFF), // 👈 勾選時為藍色
+                              materialTapTargetSize:
+                                  MaterialTapTargetSize.shrinkWrap,
                             ),
 
                             title: Text(
                               t['title'],
-                              style: TextStyle(
-                                fontSize: 16,
-                              )
+                              style: TextStyle(fontSize: 16),
                             ),
                             onTap: () {
                               showModalBottomSheet(
@@ -219,9 +229,7 @@ class _HomePageState extends State<HomePage> {
                             ),
                             title: Text(
                               h['title'],
-                              style: TextStyle(
-                                fontSize: 16,
-                              )
+                              style: TextStyle(fontSize: 16),
                             ),
                             trailing: Checkbox(
                               value: checked,
@@ -229,13 +237,17 @@ class _HomePageState extends State<HomePage> {
                                 setLocal(() => checked = v ?? false);
                                 _completeTimer?.cancel();
                                 if (checked) {
-                                  _completeTimer = Timer(const Duration(seconds: 3), () {
-                                    app.completeHomework(h['id']);
-                                  });
+                                  _completeTimer = Timer(
+                                    const Duration(seconds: 3),
+                                    () {
+                                      app.completeHomework(h['id']);
+                                    },
+                                  );
                                 }
                               },
                               activeColor: const Color(0xFF007AFF), // 👈 勾選時藍色
-                              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              materialTapTargetSize:
+                                  MaterialTapTargetSize.shrinkWrap,
                             ),
                             onTap: () {
                               showModalBottomSheet(
@@ -292,7 +304,10 @@ class _HomePageState extends State<HomePage> {
                         style: FilledButton.styleFrom(
                           backgroundColor: Colors.green, // 背景色
                           foregroundColor: Colors.white, // 文字顏色
-                          textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                          textStyle: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                         child: const Text('Set Goal'),
                       ),
@@ -306,8 +321,14 @@ class _HomePageState extends State<HomePage> {
                         },
                         style: OutlinedButton.styleFrom(
                           foregroundColor: Colors.green, // 文字顏色
-                          side: const BorderSide(color: Colors.green, width: 1.5), // 邊框顏色
-                          textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                          side: const BorderSide(
+                            color: Colors.green,
+                            width: 1.5,
+                          ), // 邊框顏色
+                          textStyle: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                         child: const Text('Start Study'),
                       ),

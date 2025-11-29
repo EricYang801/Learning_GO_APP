@@ -76,7 +76,9 @@ class AppState extends ChangeNotifier {
   Future<void> load() async {
     todos = (await KV.getList('todos')).cast<Map<String, dynamic>>();
     homeworks = (await KV.getList('homeworks')).cast<Map<String, dynamic>>();
-    announcements = (await KV.getList('announcements')).cast<Map<String, dynamic>>();
+    announcements = (await KV.getList(
+      'announcements',
+    )).cast<Map<String, dynamic>>();
     timerDaily = (await KV.getList('timerDaily')).cast<Map<String, dynamic>>();
     final cfg = await KV.getMap('cfg');
     todayGoalSeconds = cfg['todayGoalSeconds'];
@@ -110,7 +112,12 @@ class AppState extends ChangeNotifier {
 
   // --- ToDo ---
   void addTodo(String title, String desc, DateTime due) {
-    todos.add({'id': newId(), 'title': title, 'desc': desc, 'due': due.toIso8601String()});
+    todos.add({
+      'id': newId(),
+      'title': title,
+      'desc': desc,
+      'due': due.toIso8601String(),
+    });
     _sortTodos();
     _save();
     notifyListeners();
@@ -140,16 +147,19 @@ class AppState extends ChangeNotifier {
   void removeTodo(String id) {
     final i = todos.indexWhere((e) => e['id'] == id);
     if (i >= 0) {
-      todos.removeAt(i);        // ✅ 直接刪掉，不保留
+      todos.removeAt(i); // ✅ 直接刪掉，不保留
       _save();
       notifyListeners();
     }
   }
 
-  List<Map<String, dynamic>> visibleTodos() => todos.where((e) => e['doneAt'] == null).toList();
+  List<Map<String, dynamic>> visibleTodos() =>
+      todos.where((e) => e['doneAt'] == null).toList();
 
   void _sortTodos() {
-    todos.sort((a, b) => DateTime.parse(a['due']).compareTo(DateTime.parse(b['due'])));
+    todos.sort(
+      (a, b) => DateTime.parse(a['due']).compareTo(DateTime.parse(b['due'])),
+    );
   }
 
   // --- Homework ---
@@ -188,7 +198,7 @@ class AppState extends ChangeNotifier {
   void removeHomework(String id) {
     final i = homeworks.indexWhere((e) => e['id'] == id);
     if (i >= 0) {
-      homeworks.removeAt(i);    // ✅ 直接刪掉，不保留
+      homeworks.removeAt(i); // ✅ 直接刪掉，不保留
       _save();
       notifyListeners();
     }
@@ -198,23 +208,30 @@ class AppState extends ChangeNotifier {
       homeworks.where((e) => e['doneAt'] == null).toList();
 
   void _sortHw() {
-    homeworks.sort((a, b) => DateTime.parse(a['due']).compareTo(DateTime.parse(b['due'])));
+    homeworks.sort(
+      (a, b) => DateTime.parse(a['due']).compareTo(DateTime.parse(b['due'])),
+    );
   }
 
   // --- Announcements ---
   void pushAnnouncement(String title, String body) {
-    announcements.insert(
-      0,
-      {'id': newId(), 'title': title, 'body': body, 'at': DateTime.now().toIso8601String()},
-    );
+    announcements.insert(0, {
+      'id': newId(),
+      'title': title,
+      'body': body,
+      'at': DateTime.now().toIso8601String(),
+    });
     _save();
     notifyListeners();
   }
 
   // --- Timer logic ---
   int todaySeconds(DateTime date) {
-    final key =
-        DateTime(date.year, date.month, date.day).toIso8601String().substring(0, 10);
+    final key = DateTime(
+      date.year,
+      date.month,
+      date.day,
+    ).toIso8601String().substring(0, 10);
     final i = timerDaily.indexWhere((e) => e['date'] == key);
     return i >= 0 ? timerDaily[i]['seconds'] as int : 0;
   }
@@ -239,9 +256,12 @@ class AppState extends ChangeNotifier {
 
   // --- Media libraries ---
   void addAudio({required String name, required String path}) {
-    audioFiles.add(
-      {'id': newId(), 'name': name, 'path': path, 'createdAt': DateTime.now().toIso8601String()},
-    );
+    audioFiles.add({
+      'id': newId(),
+      'name': name,
+      'path': path,
+      'createdAt': DateTime.now().toIso8601String(),
+    });
     _save();
     notifyListeners();
   }
@@ -265,9 +285,12 @@ class AppState extends ChangeNotifier {
   }
 
   void addImage({required String name, required String path}) {
-    images.add(
-      {'id': newId(), 'name': name, 'path': path, 'createdAt': DateTime.now().toIso8601String()},
-    );
+    images.add({
+      'id': newId(),
+      'name': name,
+      'path': path,
+      'createdAt': DateTime.now().toIso8601String(),
+    });
     _save();
     notifyListeners();
   }
@@ -288,13 +311,18 @@ class AppState extends ChangeNotifier {
         d.year == now.year && d.month == now.month && d.day == now.day;
 
     // 分母：今天到期的全部（含已完成 + 未完成）
-    final todosToday = todos.where((e) => isToday(DateTime.parse(e['due']))).toList();
-    final hwsToday   = homeworks.where((e) => isToday(DateTime.parse(e['due']))).toList();
+    final todosToday = todos
+        .where((e) => isToday(DateTime.parse(e['due'])))
+        .toList();
+    final hwsToday = homeworks
+        .where((e) => isToday(DateTime.parse(e['due'])))
+        .toList();
     final total = todosToday.length + hwsToday.length;
 
     // 分子：今天到期且已完成
-    final done = todosToday.where((e) => e['doneAt'] != null).length +
-                hwsToday.where((e) => e['doneAt'] != null).length;
+    final done =
+        todosToday.where((e) => e['doneAt'] != null).length +
+        hwsToday.where((e) => e['doneAt'] != null).length;
 
     return (done, total);
   }
@@ -363,7 +391,10 @@ class AppState extends ChangeNotifier {
 
     if (when.isBefore(DateTime.now())) return;
 
-    pushAnnouncement('Homework reminder scheduled', 'Will remind at $when — ${hw['title']}');
+    pushAnnouncement(
+      'Homework reminder scheduled',
+      'Will remind at $when — ${hw['title']}',
+    );
 
     await NotificationService().scheduleAt(
       id: _hashId('hwr-${hw['id']}-${when.millisecondsSinceEpoch}'),
@@ -418,8 +449,8 @@ class AppState extends ChangeNotifier {
         "date": todayStr,
         "seconds": 0, // 保留原本秒數邏輯
         "sessions": [
-          { "start": _currentSessionStart!, "end": end }
-        ]
+          {"start": _currentSessionStart!, "end": end},
+        ],
       });
     } else {
       timerDaily[idx]["sessions"] ??= [];

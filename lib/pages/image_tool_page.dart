@@ -27,7 +27,9 @@ InputDecoration _decoration({
     filled: true,
     fillColor: Colors.grey[100],
     isDense: true,
-    contentPadding: contentPadding ?? const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+    contentPadding:
+        contentPadding ??
+        const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
     enabledBorder: base,
     focusedBorder: focused,
     border: base,
@@ -62,19 +64,19 @@ class _ImageToolPageState extends State<ImageToolPage> {
       MaterialPageRoute(builder: (_) => const ImageLibraryPage()),
     );
     if (result != null) {
-      app.setCurrentImage(result);   // ✅ 存到 AppState
-      setState(() {                  // 僅維持 processed 標記邏輯
+      app.setCurrentImage(result); // ✅ 存到 AppState
+      setState(() {
+        // 僅維持 processed 標記邏輯
         app.markProcessed(false);
       });
     }
   }
-  
+
   @override
   Widget build(BuildContext context) {
     final app = context.watch<AppState>();
     final isProcessed = app.isImageProcessed;
     final current = app.currentImage;
-
 
     return Scaffold(
       appBar: AppBar(
@@ -93,24 +95,36 @@ class _ImageToolPageState extends State<ImageToolPage> {
           children: [
             const Align(
               alignment: Alignment.centerLeft,
-              child: Text('Model', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+              child: Text(
+                'Model',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              ),
             ),
             const SizedBox(height: 6),
             InputDecorator(
               decoration: _decoration(contentPadding: EdgeInsets.zero),
               child: DropdownButtonHideUnderline(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 3,
+                  ),
                   child: _denseDropdownWrapper(
                     child: DropdownButton<String>(
                       isExpanded: true,
                       isDense: true,
-                      icon: const Icon(Icons.arrow_drop_down, color: Colors.grey),
+                      icon: const Icon(
+                        Icons.arrow_drop_down,
+                        color: Colors.grey,
+                      ),
                       iconSize: 24,
                       borderRadius: BorderRadius.circular(12),
                       dropdownColor: Colors.white,
                       elevation: 3,
-                      style: const TextStyle(fontSize: 15, color: Colors.black87),
+                      style: const TextStyle(
+                        fontSize: 15,
+                        color: Colors.black87,
+                      ),
                       value: currentModel,
                       items: const [
                         DropdownMenuItem(
@@ -141,7 +155,10 @@ class _ImageToolPageState extends State<ImageToolPage> {
             Expanded(
               child: Container(
                 width: double.infinity,
-                decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12)),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                ),
                 alignment: Alignment.center,
                 child: (current == null)
                     ? const Text('No image')
@@ -150,7 +167,7 @@ class _ImageToolPageState extends State<ImageToolPage> {
                           Positioned.fill(
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(12),
-                              child: Image.file(current!, fit: BoxFit.contain),
+                              child: Image.file(current, fit: BoxFit.contain),
                             ),
                           ),
                           if (isProcessed)
@@ -189,17 +206,21 @@ class _ImageToolPageState extends State<ImageToolPage> {
                     height: 48,
                     child: FilledButton(
                       style: FilledButton.styleFrom(
-                        backgroundColor: processing ? Colors.red : (isProcessed ? Colors.grey : Colors.green),
-                        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                        backgroundColor: processing
+                            ? Colors.red
+                            : (isProcessed ? Colors.grey : Colors.green),
+                        textStyle: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
-                      child: Text(processing ? 'Processing...' : (isProcessed ? 'Already Enhanced' : 'Start Enhancement')),
                       onPressed: (current == null || processing || isProcessed)
                           ? null
                           : () async {
                               setState(() => processing = true);
                               try {
                                 final app = context.read<AppState>();
-                                final src = app.currentImage;   // 讀取 AppState 的圖片
+                                final src = app.currentImage; // 讀取 AppState 的圖片
                                 if (src == null) return;
 
                                 // ⭐ Step 1：先把原圖存到 Original（不更動你的功能）
@@ -209,49 +230,68 @@ class _ImageToolPageState extends State<ImageToolPage> {
                                 final imageBytes = await src.readAsBytes();
 
                                 // 取出使用者選擇的模型檔名（例如 Conservative / Medium…）
-                                final modelFileName = currentModel.split('/').last;
+                                final modelFileName = currentModel
+                                    .split('/')
+                                    .last;
 
                                 // 執行 ONNX，取得 PNG bytes
                                 final outBytes = await OnnxService()
                                     .run(imageBytes, modelFileName)
-                                    .timeout(const Duration(seconds: 20), onTimeout: () {
-                                  throw TimeoutException('ONNX inference timed out');
-                                });
+                                    .timeout(
+                                      const Duration(seconds: 20),
+                                      onTimeout: () {
+                                        throw TimeoutException(
+                                          'ONNX inference timed out',
+                                        );
+                                      },
+                                    );
 
                                 // ⭐ Step 3：寫入暫存檔（保持你的處理流程）
-                                final tmpDir = await Directory.systemTemp.createTemp('onnx_');
+                                final tmpDir = await Directory.systemTemp
+                                    .createTemp('onnx_');
                                 final tmpPath =
                                     '${tmpDir.path}/enh_${DateTime.now().millisecondsSinceEpoch}.png';
-                                final tmpFile = await File(tmpPath).writeAsBytes(outBytes);
+                                final tmpFile = await File(
+                                  tmpPath,
+                                ).writeAsBytes(outBytes);
 
                                 // ⭐ Step 4：存成 processed（不更動你的功能）
-                                final processedFile = await media.saveAsProcessed(tmpFile);
+                                final processedFile = await media
+                                    .saveAsProcessed(tmpFile);
 
                                 if (mounted) {
                                   // ⭐ 重要：寫回 AppState（才能在 UI 看到新圖片）
                                   app.setCurrentImage(processedFile);
 
                                   setState(() {
-                                    app.markProcessed(true);    // 本頁標記
+                                    app.markProcessed(true); // 本頁標記
                                   });
 
                                   // ⭐ 存入 AppState 圖庫（原本就有）
                                   context.read<AppState>().addImage(
-                                        name: processedFile.uri.pathSegments.last,
-                                        path: processedFile.path,
-                                      );
+                                    name: processedFile.uri.pathSegments.last,
+                                    path: processedFile.path,
+                                  );
                                 }
                               } catch (e) {
                                 if (mounted) {
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text('Process failed: $e')),
+                                    SnackBar(
+                                      content: Text('Process failed: $e'),
+                                    ),
                                   );
                                 }
                               } finally {
                                 if (mounted) setState(() => processing = false);
                               }
                             },
-
+                      child: Text(
+                        processing
+                            ? 'Processing...'
+                            : (isProcessed
+                                  ? 'Already Enhanced'
+                                  : 'Start Enhancement'),
+                      ),
                     ),
                   ),
                 ),
@@ -261,7 +301,9 @@ class _ImageToolPageState extends State<ImageToolPage> {
                   height: 48,
                   child: IconButton(
                     style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(const Color(0xFF007AFF)),
+                      backgroundColor: WidgetStateProperty.all(
+                        const Color(0xFF007AFF),
+                      ),
                     ),
                     onPressed: processing
                         ? null
@@ -269,7 +311,7 @@ class _ImageToolPageState extends State<ImageToolPage> {
                             final app = context.read<AppState>();
                             final f = await media.captureFromCamera();
                             if (f != null) {
-                              app.setCurrentImage(f);          // ✅ 存到 AppState
+                              app.setCurrentImage(f); // ✅ 存到 AppState
                               app.markProcessed(false);
                             }
                           },
@@ -285,8 +327,8 @@ class _ImageToolPageState extends State<ImageToolPage> {
                   height: 48,
                   child: IconButton(
                     style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(Colors.white),
-                      side: MaterialStateProperty.all(
+                      backgroundColor: WidgetStateProperty.all(Colors.white),
+                      side: WidgetStateProperty.all(
                         const BorderSide(color: Color(0xFF007AFF), width: 1.5),
                       ),
                     ),
@@ -296,8 +338,8 @@ class _ImageToolPageState extends State<ImageToolPage> {
                             final app = context.read<AppState>();
                             final f = await media.pickFromGallery();
                             if (f != null) {
-                                app.setCurrentImage(f);        // ✅ 存到 AppState
-                                app.markProcessed(false);
+                              app.setCurrentImage(f); // ✅ 存到 AppState
+                              app.markProcessed(false);
                             }
                           },
                     icon: const Icon(Icons.perm_media),
@@ -318,13 +360,15 @@ class _ImageToolPageState extends State<ImageToolPage> {
     context.read<AppState>().markProcessed(false);
   }
 
-
   Future<void> _downloadProcessed() async {
     final app = context.read<AppState>();
     final img = app.currentImage;
     if (!app.isImageProcessed || img == null) return;
 
-    final ok = await MediaService().saveProcessedToDevice(img, album: 'LearningGO');
+    final ok = await MediaService().saveProcessedToDevice(
+      img,
+      album: 'LearningGO',
+    );
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(ok ? 'Saved to Photos' : 'Save failed')),
@@ -362,4 +406,3 @@ class _SmallCircleButton extends StatelessWidget {
     );
   }
 }
-

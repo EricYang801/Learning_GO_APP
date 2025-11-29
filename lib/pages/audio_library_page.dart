@@ -24,7 +24,9 @@ InputDecoration _decoration({
     filled: true,
     fillColor: Colors.grey[100],
     isDense: true,
-    contentPadding: contentPadding ?? const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+    contentPadding:
+        contentPadding ??
+        const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
     enabledBorder: base,
     focusedBorder: focused,
     border: base,
@@ -94,7 +96,10 @@ class AudioLibraryPage extends StatelessWidget {
                     Navigator.pop<File>(context, File(a['path']));
                   },
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 10,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.grey[100],
                       borderRadius: BorderRadius.circular(12),
@@ -109,7 +114,10 @@ class AudioLibraryPage extends StatelessWidget {
                             a['name'] ?? '',
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ),
                         const SizedBox(width: 8),
@@ -117,32 +125,63 @@ class AudioLibraryPage extends StatelessWidget {
                         // 重新命名
                         IconButton(
                           tooltip: 'Rename',
-                          icon: const Icon(Icons.edit, color: Color(0xFF007AFF)),
+                          icon: const Icon(
+                            Icons.edit,
+                            color: Color(0xFF007AFF),
+                          ),
                           iconSize: 25,
                           padding: EdgeInsets.zero,
-                          constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
-                          visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
+                          constraints: const BoxConstraints(
+                            minWidth: 28,
+                            minHeight: 28,
+                          ),
+                          visualDensity: const VisualDensity(
+                            horizontal: -4,
+                            vertical: -4,
+                          ),
                           onPressed: () {
                             showDialog(
                               context: context,
                               builder: (ctx) {
-                                final ctrl = TextEditingController(text: a['name']);
+                                final ctrl = TextEditingController(
+                                  text: a['name'],
+                                );
                                 return AlertDialog(
                                   backgroundColor: Colors.white,
                                   surfaceTintColor: Colors.white,
-                                  titlePadding: const EdgeInsets.fromLTRB(20, 16, 20, 6),
-                                  contentPadding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                                  actionsPadding: const EdgeInsets.fromLTRB(20, 8, 20, 8),
+                                  titlePadding: const EdgeInsets.fromLTRB(
+                                    20,
+                                    16,
+                                    20,
+                                    6,
+                                  ),
+                                  contentPadding: const EdgeInsets.fromLTRB(
+                                    20,
+                                    0,
+                                    20,
+                                    0,
+                                  ),
+                                  actionsPadding: const EdgeInsets.fromLTRB(
+                                    20,
+                                    8,
+                                    20,
+                                    8,
+                                  ),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(16),
                                   ),
                                   title: const Text(
                                     'Rename Audio',
-                                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                    ),
                                   ),
                                   content: TextField(
                                     controller: ctrl,
-                                    decoration: _decoration(hint: 'Enter new name'),
+                                    decoration: _decoration(
+                                      hint: 'Enter new name',
+                                    ),
                                   ),
                                   actions: [
                                     TextButton(
@@ -152,7 +191,10 @@ class AudioLibraryPage extends StatelessWidget {
                                       ),
                                       child: const Text(
                                         'Cancel',
-                                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                        ),
                                       ),
                                     ),
                                     TextButton(
@@ -168,7 +210,10 @@ class AudioLibraryPage extends StatelessWidget {
                                       },
                                       child: const Text(
                                         'Save',
-                                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                        ),
                                       ),
                                     ),
                                   ],
@@ -183,11 +228,20 @@ class AudioLibraryPage extends StatelessWidget {
                         // 刪除（成功靜默、失敗才提示）
                         IconButton(
                           tooltip: 'Delete',
-                          icon: const Icon(Icons.delete_outline, color: Colors.red),
+                          icon: const Icon(
+                            Icons.delete_outline,
+                            color: Colors.red,
+                          ),
                           iconSize: 25,
                           padding: EdgeInsets.zero,
-                          constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
-                          visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
+                          constraints: const BoxConstraints(
+                            minWidth: 28,
+                            minHeight: 28,
+                          ),
+                          visualDensity: const VisualDensity(
+                            horizontal: -4,
+                            vertical: -4,
+                          ),
                           onPressed: () async {
                             try {
                               app.removeAudio(a['id']);

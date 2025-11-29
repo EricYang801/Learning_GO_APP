@@ -74,7 +74,7 @@ class _ImageLibraryPageState extends State<ImageLibraryPage>
           controller: _tab,
           labelColor: const Color(0xFF007AFF),
           indicatorColor: const Color(0xFF007AFF),
-          overlayColor: MaterialStateProperty.all(Colors.transparent),
+          overlayColor: WidgetStateProperty.all(Colors.transparent),
           tabs: const [
             Tab(text: 'Original'),
             Tab(text: 'Processed'),

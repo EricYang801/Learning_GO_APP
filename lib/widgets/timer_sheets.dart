@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/app_state.dart';
-import '../widgets/ios_time_picker.dart'; 
+import '../widgets/ios_time_picker.dart';
 
 class SetGoalSheet extends StatefulWidget {
   const SetGoalSheet({super.key});
@@ -49,12 +49,17 @@ class _SetGoalSheetState extends State<SetGoalSheet> {
 
           const SizedBox(height: 12),
           FilledButton(
-            style: FilledButton.styleFrom(backgroundColor: const Color(0xFF007AFF)),
+            style: FilledButton.styleFrom(
+              backgroundColor: const Color(0xFF007AFF),
+            ),
             onPressed: () {
               app.setGoalSeconds(_goal.inSeconds); // ✅ 存回去
               Navigator.pop(context);
             },
-            child: const Text('Save', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+            child: const Text(
+              'Save',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+            ),
           ),
           const SizedBox(height: 20),
         ],
@@ -63,17 +68,35 @@ class _SetGoalSheetState extends State<SetGoalSheet> {
   }
 }
 
-
-
-class NumberPicker extends StatelessWidget{
-  final int value; final String label; final int max; final int step; final void Function(int) onChanged;
-  const NumberPicker({super.key, required this.value, required this.label, this.max=23, this.step=1, required this.onChanged});
-  @override Widget build(BuildContext context){
-    return Row(children:[
-      IconButton(onPressed: ()=> onChanged((value-step).clamp(0,max)), icon: const Icon(Icons.remove)),
-      Text('$value$label', style: const TextStyle(fontSize:18)),
-      IconButton(onPressed: ()=> onChanged((value+step).clamp(0,max)), icon: const Icon(Icons.add)),
-    ]);
+class NumberPicker extends StatelessWidget {
+  final int value;
+  final String label;
+  final int max;
+  final int step;
+  final void Function(int) onChanged;
+  const NumberPicker({
+    super.key,
+    required this.value,
+    required this.label,
+    this.max = 23,
+    this.step = 1,
+    required this.onChanged,
+  });
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        IconButton(
+          onPressed: () => onChanged((value - step).clamp(0, max)),
+          icon: const Icon(Icons.remove),
+        ),
+        Text('$value$label', style: const TextStyle(fontSize: 18)),
+        IconButton(
+          onPressed: () => onChanged((value + step).clamp(0, max)),
+          icon: const Icon(Icons.add),
+        ),
+      ],
+    );
   }
 }
 
@@ -141,7 +164,8 @@ class _TimerModeSheetState extends State<TimerModeSheet> {
               ),
               _ModeSwitch(
                 isStopwatch: mode == 'stopwatch',
-                onChanged: (v) => setState(() => mode = v ? 'stopwatch' : 'countdown'),
+                onChanged: (v) =>
+                    setState(() => mode = v ? 'stopwatch' : 'countdown'),
               ),
             ],
           ),
@@ -155,7 +179,12 @@ class _TimerModeSheetState extends State<TimerModeSheet> {
 
               final app = context.read<AppState>();
               // 以「上次使用者設定的時間」為初始；若沒有就用目前 countdown
-              final initial = Duration(seconds: (app.lastCountdownSeconds ?? countdown).clamp(0, 24 * 3600));
+              final initial = Duration(
+                seconds: (app.lastCountdownSeconds ?? countdown).clamp(
+                  0,
+                  24 * 3600,
+                ),
+              );
 
               final picked = await pickCountdownHMS(
                 context,
@@ -181,7 +210,6 @@ class _TimerModeSheetState extends State<TimerModeSheet> {
             ),
           ),
 
-
           const SizedBox(height: 30),
 
           // ✅ 三個固定等寬的控制按鈕
@@ -194,17 +222,24 @@ class _TimerModeSheetState extends State<TimerModeSheet> {
                   child: FilledButton(
                     style: FilledButton.styleFrom(
                       backgroundColor: running
-                          ? Colors.red // 紅色（暫停）
+                          ? Colors
+                                .red // 紅色（暫停）
                           : Colors.green, // 綠色（開始）
                       foregroundColor: Colors.white,
-                      textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                      textStyle: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                     onPressed: !canStart
                         ? null
                         : () {
                             if (!running) {
                               app.startStudySession();
-                              _ticker = Timer.periodic(const Duration(seconds: 1), (_) => _tick());
+                              _ticker = Timer.periodic(
+                                const Duration(seconds: 1),
+                                (_) => _tick(),
+                              );
                             }
                             setState(() => running = !running);
                             if (!running) _ticker?.cancel();
@@ -220,8 +255,14 @@ class _TimerModeSheetState extends State<TimerModeSheet> {
                   child: OutlinedButton(
                     style: OutlinedButton.styleFrom(
                       foregroundColor: const Color(0xFF007AFF),
-                      side: const BorderSide(color: Color(0xFF007AFF), width: 1.5),
-                      textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                      side: const BorderSide(
+                        color: Color(0xFF007AFF),
+                        width: 1.5,
+                      ),
+                      textStyle: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                     onPressed: () {
                       // 🔹 停止計時器
@@ -240,7 +281,6 @@ class _TimerModeSheetState extends State<TimerModeSheet> {
                   ),
                 ),
 
-
                 const SizedBox(width: 8),
 
                 // ✅ Save 按鈕（淺藍底 + 藍字）
@@ -249,15 +289,19 @@ class _TimerModeSheetState extends State<TimerModeSheet> {
                     style: FilledButton.styleFrom(
                       backgroundColor: const Color(0xFFD6E6FF), // 淺藍底
                       foregroundColor: const Color(0xFF007AFF), // 藍色文字
-                      textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                      textStyle: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                     onPressed: running
                         ? null
                         : () {
                             final raw = mode == 'stopwatch'
                                 ? elapsed
-                                : ((app.lastCountdownSeconds ?? 1500) - countdown)
-                                    .clamp(0, 24 * 3600);
+                                : ((app.lastCountdownSeconds ?? 1500) -
+                                          countdown)
+                                      .clamp(0, 24 * 3600);
 
                             // ⬇️ 取整到分鐘（向下取整）
                             final gained = ((raw + 30) ~/ 60) * 60; // 四捨五入到分鐘
@@ -266,7 +310,8 @@ class _TimerModeSheetState extends State<TimerModeSheet> {
 
                             if (gained >= 60) app.addTodaySeconds(gained);
                             if (mode == 'countdown') {
-                              app.lastCountdownSeconds = countdown; // 你原本的行為，依需求保留
+                              app.lastCountdownSeconds =
+                                  countdown; // 你原本的行為，依需求保留
                             }
                             Navigator.pop(context);
                           },
@@ -277,7 +322,6 @@ class _TimerModeSheetState extends State<TimerModeSheet> {
               ],
             ),
           ),
-
 
           const SizedBox(height: 20),
         ],
@@ -291,10 +335,7 @@ class _ModeSwitch extends StatelessWidget {
   final bool isStopwatch;
   final ValueChanged<bool> onChanged;
 
-  const _ModeSwitch({
-    required this.isStopwatch,
-    required this.onChanged,
-  });
+  const _ModeSwitch({required this.isStopwatch, required this.onChanged});
 
   static const _blue = Color(0xFF007AFF);
 
@@ -316,8 +357,9 @@ class _ModeSwitch extends StatelessWidget {
           AnimatedAlign(
             duration: const Duration(milliseconds: 250),
             curve: Curves.easeInOut,
-            alignment:
-                isStopwatch ? Alignment.centerLeft : Alignment.centerRight,
+            alignment: isStopwatch
+                ? Alignment.centerLeft
+                : Alignment.centerRight,
             child: FractionallySizedBox(
               widthFactor: 0.5, // 小藥丸佔整體一半寬
               child: Container(

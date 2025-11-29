@@ -28,7 +28,10 @@ Future<T?> _showCupertinoCenterDialog<T>({
         builder: (_, constraints) {
           final double maxW = constraints.maxWidth;
           // 針對 h:m:s 可能太擠；若有指定就用指定寬度，否則預設 340
-          final double dialogW = (preferredWidth ?? 340).clamp(280.0, maxW - 24);
+          final double dialogW = (preferredWidth ?? 340).clamp(
+            280.0,
+            maxW - 24,
+          );
 
           return Center(
             child: Container(
@@ -74,11 +77,14 @@ Future<T?> _showCupertinoCenterDialog<T>({
                   const SizedBox(height: 12),
                   // 底部按鈕列（左右各半，白底）
                   Row(
-                    children: (actions ??
+                    children:
+                        (actions ??
                         [
                           CupertinoButton(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 8),
+                              horizontal: 12,
+                              vertical: 8,
+                            ),
                             onPressed: () => Navigator.of(ctx).pop(null),
                             child: const Text(
                               'Cancel',
@@ -92,7 +98,9 @@ Future<T?> _showCupertinoCenterDialog<T>({
                           const Spacer(),
                           CupertinoButton(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 8),
+                              horizontal: 12,
+                              vertical: 8,
+                            ),
                             onPressed: () => Navigator.of(ctx).pop(),
                             child: const Text(
                               'Done',
@@ -131,13 +139,12 @@ Future<TimeOfDay?> pickTime(
       builder: (context, child) {
         final themed = Theme(
           data: Theme.of(context).copyWith(
-            dialogBackgroundColor: Colors.white,
             timePickerTheme: const TimePickerThemeData(
               backgroundColor: Colors.white,
               dialBackgroundColor: Colors.white,
               hourMinuteColor: Colors.white,
               dayPeriodColor: Colors.white,
-            ),
+            ), dialogTheme: DialogThemeData(backgroundColor: Colors.white),
           ),
           child: child!,
         );
@@ -215,12 +222,11 @@ Future<DateTime?> pickDate(
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            dialogBackgroundColor: Colors.white,
             datePickerTheme: const DatePickerThemeData(
               backgroundColor: Colors.white,
               headerBackgroundColor: Colors.white,
               surfaceTintColor: Colors.transparent,
-            ),
+            ), dialogTheme: DialogThemeData(backgroundColor: Colors.white),
           ),
           child: child!,
         );

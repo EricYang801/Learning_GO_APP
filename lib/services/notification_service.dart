@@ -13,7 +13,8 @@ class NotificationService {
   factory NotificationService() => _instance;
   NotificationService._internal();
 
-  final FlutterLocalNotificationsPlugin _fln = FlutterLocalNotificationsPlugin();
+  final FlutterLocalNotificationsPlugin _fln =
+      FlutterLocalNotificationsPlugin();
   bool _inited = false;
 
   /// 初始化：權限 + 時區
@@ -37,7 +38,8 @@ class NotificationService {
     if (Platform.isIOS) {
       await _fln
           .resolvePlatformSpecificImplementation<
-              IOSFlutterLocalNotificationsPlugin>()
+            IOSFlutterLocalNotificationsPlugin
+          >()
           ?.requestPermissions(alert: true, badge: true, sound: true);
     }
 

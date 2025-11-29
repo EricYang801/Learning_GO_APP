@@ -23,13 +23,15 @@ class NotificationsPage extends StatelessWidget {
       ),
       body: ListView.separated(
         itemCount: app.announcements.length,
-        separatorBuilder: (_, __)=>const Divider(height:1),
-        itemBuilder: (_, i){
+        separatorBuilder: (_, __) => const Divider(height: 1),
+        itemBuilder: (_, i) {
           final a = app.announcements[i];
           return ListTile(
             title: Text(a['title'] ?? ''),
             subtitle: Text(a['body'] ?? ''),
-            trailing: Text((a['at'] as String).substring(0,16).replaceFirst('T',' ')),
+            trailing: Text(
+              (a['at'] as String).substring(0, 16).replaceFirst('T', ' '),
+            ),
           );
         },
       ),
