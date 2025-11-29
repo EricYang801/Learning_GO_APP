@@ -2,27 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-
-	<!-- 語音辨識（speech_to_text） -->
-	<key>NSSpeechRecognitionUsageDescription</key>
-	<string>This app uses speech recognition to convert your voice to text.</string>
-
-	<!-- 麥克風（record 錄音 + STT） -->
-	<key>NSMicrophoneUsageDescription</key>
-	<string>This app needs microphone access for recording and speech recognition.</string>
-
-	<!-- 相機（拍照） -->
-	<key>NSCameraUsageDescription</key>
-	<string>This app uses the camera to capture images for enhancement.</string>
-
-	<!-- 相簿讀取（挑選圖片） -->
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>This app needs photo library access to select images.</string>
-
-	<!-- 相簿寫入（若未來要把強化後圖片存到相簿，再加；目前只存App內，可先保留） -->
-	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>This app may save enhanced images to your photo library.</string>
-
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
@@ -45,6 +26,18 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>This app uses the camera to capture images for enhancement.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>This app needs microphone access for recording and speech recognition.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>This app may save enhanced images to your photo library.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app needs photo library access to select images.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>This app uses speech recognition to convert your voice to text.</string>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
@@ -62,9 +55,5 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>CADisableMinimumFrameDurationOnPhone</key>
-	<true/>
-	<key>UIApplicationSupportsIndirectInputEvents</key>
-	<true/>
 </dict>
 </plist>

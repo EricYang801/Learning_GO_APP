@@ -1,6 +1,0 @@
-framework module whisper_ggml {
-  umbrella header "whisper_ggml-umbrella.h"
-
-  export *
-  module * { export * }
-}
