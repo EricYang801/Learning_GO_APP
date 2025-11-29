@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../core/constants/app_colors.dart';
@@ -10,6 +9,8 @@ import '../widgets/section_card.dart';
 import '../widgets/todo_homework_sheets.dart';
 import '../widgets/timer_sheets.dart';
 import '../widgets/ring_progress.dart';
+import '../widgets/todo_list_item.dart';
+import '../widgets/homework_list_item.dart';
 import 'notifications_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -19,14 +20,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  Timer? _completeTimer;
-
-  @override
-  void dispose() {
-    _completeTimer?.cancel();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     final todoState = context.watch<TodoState>();
@@ -123,44 +116,15 @@ class _HomePageState extends State<HomePage> {
                     itemCount: todos.length,
                     itemBuilder: (_, i) {
                       final t = todos[i];
-                      bool checked = false;
-                      return StatefulBuilder(
-                        builder: (ctx, setLocal) {
-                          return ListTile(
-                            dense: true,
-                            contentPadding: EdgeInsets.zero,
-                            horizontalTitleGap: 12,
-                            leading: Checkbox(
-                              value: checked,
-                              onChanged: (v) {
-                                setLocal(() => checked = v ?? false);
-                                _completeTimer?.cancel();
-                                if (checked) {
-                                  _completeTimer = Timer(
-                                    const Duration(seconds: 3),
-                                    () {
-                                      todoState.complete(t.id);
-                                    },
-                                  );
-                                }
-                              },
-                              shape: const CircleBorder(),
-                              activeColor: AppColors.accent,
-                              materialTapTargetSize:
-                                  MaterialTapTargetSize.shrinkWrap,
-                            ),
-
-                            title: Text(
-                              t.title,
-                              style: const TextStyle(fontSize: 16),
-                            ),
-                            onTap: () {
-                              showModalBottomSheet(
-                                context: context,
-                                isScrollControlled: true,
-                                builder: (_) => AddTodoSheet(existing: t),
-                              );
-                            },
+                      return TodoListItem(
+                        key: ValueKey(t.id),
+                        todo: t,
+                        onComplete: () => todoState.complete(t.id),
+                        onTap: () {
+                          showModalBottomSheet(
+                            context: context,
+                            isScrollControlled: true,
+                            builder: (_) => AddTodoSheet(existing: t),
                           );
                         },
                       );
@@ -212,59 +176,15 @@ class _HomePageState extends State<HomePage> {
                     itemCount: homeworks.length,
                     itemBuilder: (_, i) {
                       final h = homeworks[i];
-                      bool checked = false;
-                      return StatefulBuilder(
-                        builder: (ctx, setLocal) {
-                          return ListTile(
-                            dense: true,
-                            contentPadding: EdgeInsets.zero,
-                            horizontalTitleGap: 12,
-                            leading: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Container(
-                                  width: 4,
-                                  height: 32,
-                                  decoration: BoxDecoration(
-                                    color: Color(
-                                      int.tryParse(h.color ?? '', radix: 16) ??
-                                          0xFFFFA000,
-                                    ),
-                                    borderRadius: BorderRadius.circular(2),
-                                  ),
-                                ),
-                                const SizedBox(width: 10),
-                              ],
-                            ),
-                            title: Text(
-                              h.title,
-                              style: const TextStyle(fontSize: 16),
-                            ),
-                            trailing: Checkbox(
-                              value: checked,
-                              onChanged: (v) {
-                                setLocal(() => checked = v ?? false);
-                                _completeTimer?.cancel();
-                                if (checked) {
-                                  _completeTimer = Timer(
-                                    const Duration(seconds: 3),
-                                    () {
-                                      hwState.complete(h.id);
-                                    },
-                                  );
-                                }
-                              },
-                              activeColor: AppColors.accent,
-                              materialTapTargetSize:
-                                  MaterialTapTargetSize.shrinkWrap,
-                            ),
-                            onTap: () {
-                              showModalBottomSheet(
-                                context: context,
-                                isScrollControlled: true,
-                                builder: (_) => AddHomeworkSheet(existing: h),
-                              );
-                            },
+                      return HomeworkListItem(
+                        key: ValueKey(h.id),
+                        homework: h,
+                        onComplete: () => hwState.complete(h.id),
+                        onTap: () {
+                          showModalBottomSheet(
+                            context: context,
+                            isScrollControlled: true,
+                            builder: (_) => AddHomeworkSheet(existing: h),
                           );
                         },
                       );

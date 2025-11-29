@@ -23,15 +23,46 @@ class _VoicePageState extends State<VoicePage> {
   final STTService stt = STTService();
   final MediaService media = MediaService();
 
-  bool sttReady = false; // Whisper/模型是否已就緒（僅做初始化檢查）
+  // null = 尚未初始化, true = 成功, false = 失敗
+  bool? sttReady;
 
-  @override
-  void initState() {
-    super.initState();
-    // 僅為「檔案轉寫時」預先準備模型；Start/Stop 錄音不會使用 STT
-    stt.init().then((ok) {
-      if (mounted) setState(() => sttReady = ok);
-    });
+  // 是否正在載入模型
+  bool _loadingModel = false;
+
+  /// 延遲初始化 STT 模型（只在需要轉寫時才載入）
+  Future<bool> _ensureSTTReady() async {
+    // 已經初始化過，直接回傳結果
+    if (sttReady != null) return sttReady!;
+
+    // 正在載入中，等待完成
+    if (_loadingModel) {
+      // 等待載入完成（簡單的輪詢）
+      while (_loadingModel) {
+        await Future.delayed(const Duration(milliseconds: 100));
+      }
+      return sttReady ?? false;
+    }
+
+    // 開始載入模型
+    _loadingModel = true;
+    try {
+      final ok = await stt.init();
+      if (mounted) {
+        setState(() {
+          sttReady = ok;
+          _loadingModel = false;
+        });
+      }
+      return ok;
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          sttReady = false;
+          _loadingModel = false;
+        });
+      }
+      return false;
+    }
   }
 
   /// 將 STT 回傳結果（String / Iterable / Map）統一轉成純文字
@@ -89,11 +120,13 @@ class _VoicePageState extends State<VoicePage> {
     voice.setVoiceTranscribing(true);
 
     try {
-      if (!sttReady) {
-        final ok = await stt.init();
-        if (!ok) throw Exception('Model not ready');
-        if (mounted) setState(() => sttReady = true);
+      // 使用延遲載入，只在需要時才初始化模型
+      if (_loadingModel) {
+        voice.setVoiceText('Loading model...');
       }
+
+      final ready = await _ensureSTTReady();
+      if (!ready) throw Exception('Model not ready');
 
       debugPrint('[STT] start file transcribe: ${file.path}');
       final Object raw = await stt.transcribeFile(file.path, lang: 'auto');
