@@ -55,6 +55,7 @@ dependencies:
   image: ^4.1.7         # 影像前/後處理
   flutter_local_notifications: ^17.2.2
   timezone: ^0.9.3
+  fl_chart: ^0.68.0
 
 dev_dependencies:
   flutter_test:

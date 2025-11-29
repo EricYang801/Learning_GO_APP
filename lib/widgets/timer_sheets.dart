@@ -203,6 +203,7 @@ class _TimerModeSheetState extends State<TimerModeSheet> {
                         ? null
                         : () {
                             if (!running) {
+                              app.startStudySession();
                               _ticker = Timer.periodic(const Duration(seconds: 1), (_) => _tick());
                             }
                             setState(() => running = !running);
@@ -260,6 +261,8 @@ class _TimerModeSheetState extends State<TimerModeSheet> {
 
                             // ⬇️ 取整到分鐘（向下取整）
                             final gained = ((raw + 30) ~/ 60) * 60; // 四捨五入到分鐘
+
+                            app.endStudySession();
 
                             if (gained >= 60) app.addTodaySeconds(gained);
                             if (mode == 'countdown') {

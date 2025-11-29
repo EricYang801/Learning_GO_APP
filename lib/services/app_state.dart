@@ -388,4 +388,49 @@ class AppState extends ChangeNotifier {
     isImageProcessed = v;
     notifyListeners();
   }
+
+  // =========== Study Session Tracking ===========
+  String? _currentSessionStart;
+
+  // 呼叫：開始一段讀書 session
+  void startStudySession() {
+    final now = DateTime.now();
+    _currentSessionStart =
+        "${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}";
+    notifyListeners();
+  }
+
+  // 呼叫：結束一段讀書 session
+  void endStudySession() {
+    if (_currentSessionStart == null) return;
+
+    final now = DateTime.now();
+    final end =
+        "${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}";
+
+    final todayStr =
+        "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}";
+
+    int idx = timerDaily.indexWhere((e) => e["date"] == todayStr);
+
+    if (idx == -1) {
+      timerDaily.add({
+        "date": todayStr,
+        "seconds": 0, // 保留原本秒數邏輯
+        "sessions": [
+          { "start": _currentSessionStart!, "end": end }
+        ]
+      });
+    } else {
+      timerDaily[idx]["sessions"] ??= [];
+      (timerDaily[idx]["sessions"] as List).add({
+        "start": _currentSessionStart!,
+        "end": end,
+      });
+    }
+
+    _currentSessionStart = null;
+    _save();
+    notifyListeners();
+  }
 }
